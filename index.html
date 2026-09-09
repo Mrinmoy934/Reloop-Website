@@ -139,6 +139,87 @@
       overflow: clip;
     }
 
+    /* Responsive Navigation Bar Styles */
+    .desktop-nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(14px, 2.5vw, 30px);
+      font: 500 12px/1 'IBM Plex Mono', monospace;
+      letter-spacing: 0.06em;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1px solid rgba(17, 19, 16, 0.25);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #111310;
+      transition: all 0.2s ease;
+    }
+    .mobile-nav-toggle:hover {
+      background: #111310;
+      color: #CBF25A;
+      border-color: #111310;
+    }
+
+    .mobile-menu-drawer {
+      display: flex;
+      visibility: hidden;
+      pointer-events: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(242, 240, 235, 0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(17, 19, 16, 0.15);
+      padding: 24px clamp(16px, 4vw, 48px);
+      box-shadow: 0 16px 40px rgba(17, 19, 16, 0.12);
+      flex-direction: column;
+      gap: 16px;
+      transform: translateY(-12px);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 59;
+    }
+
+    .mobile-menu-drawer.open {
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .mobile-menu-link {
+      font: 600 16px/1.2 'Archivo', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(17, 19, 16, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 820px) {
+      .desktop-nav-links {
+        display: none !important;
+      }
+      .mobile-nav-toggle {
+        display: flex !important;
+      }
+      .cta-nav-btn {
+        display: none !important;
+      }
+    }
+
     /* Hover Utilities */
     .btn-hover-expand {
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -276,9 +357,9 @@
 
 <div class="container">
 
-  <!-- Navigation Bar -->
+  <!-- Responsive Navigation Bar -->
   <header data-rl="nav" id="navbar" style="position:sticky;top:0;z-index:60;background:rgba(242,240,235,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(17,19,16,.1);transition:padding 0.3s ease, box-shadow 0.3s ease;">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px clamp(16px,3vw,48px)">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(16px,3vw,48px);position:relative">
       <a href="#top" style="display:flex;align-items:center;gap:10px">
         <span style="width:22px;height:22px;border:2px solid #111310;border-radius:50%;display:block;position:relative">
           <span style="position:absolute;top:-3px;left:50%;width:6px;height:6px;background:#CBF25A;border:1.5px solid #111310;border-radius:50%;transform:translateX(-50%)"></span>
@@ -286,17 +367,49 @@
         <span style="font-weight:800;font-size:19px;letter-spacing:-.02em">RELOOP</span>
       </a>
       
-      <nav style="display:flex;align-items:center;gap:clamp(14px,2.5vw,30px);font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em">
+      <!-- Desktop Navigation Links -->
+      <nav class="desktop-nav-links">
         <a href="#materials" style="color:rgba(17,19,16,.7)">MATERIALS</a>
         <a href="#process" style="color:rgba(17,19,16,.7)">PROCESS</a>
         <a href="#impact" style="color:rgba(17,19,16,.7)">IMPACT</a>
         <a href="#about" style="color:rgba(17,19,16,.7)">ABOUT</a>
       </nav>
 
-      <a href="#enquiry" class="btn-hover-expand" style="display:flex;align-items:center;gap:10px;background:#111310;color:#F2F0EB;padding:9px 9px 9px 18px;border-radius:100px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em">
-        TALK TO US
-        <span style="width:26px;height:26px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:11px;transition:background 0.2s, color 0.2s">↗</span>
-      </a>
+      <!-- Right Action Controls -->
+      <div style="display:flex;align-items:center;gap:12px">
+        <a href="#enquiry" class="btn-hover-expand cta-nav-btn" style="display:flex;align-items:center;gap:10px;background:#111310;color:#F2F0EB;padding:9px 9px 9px 18px;border-radius:100px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em">
+          TALK TO US
+          <span style="width:26px;height:26px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:11px;transition:background 0.2s, color 0.2s">↗</span>
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation Menu">
+          <span id="menu-icon">☰</span>
+        </button>
+      </div>
+
+      <!-- Mobile Dropdown Menu Drawer -->
+      <div id="mobile-drawer" class="mobile-menu-drawer">
+        <a href="#materials" class="mobile-menu-link">
+          <span>MATERIALS</span>
+          <span>→</span>
+        </a>
+        <a href="#process" class="mobile-menu-link">
+          <span>PROCESS</span>
+          <span>→</span>
+        </a>
+        <a href="#impact" class="mobile-menu-link">
+          <span>IMPACT</span>
+          <span>→</span>
+        </a>
+        <a href="#about" class="mobile-menu-link">
+          <span>ABOUT</span>
+          <span>→</span>
+        </a>
+        <a href="#enquiry" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px;background:#111310;color:#F2F0EB;padding:14px;border-radius:100px;font:600 13px/1 'Archivo',sans-serif">
+          TALK TO US <span style="color:#CBF25A">↗</span>
+        </a>
+      </div>
     </div>
   </header>
 
@@ -1139,21 +1252,55 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   
-  // 0. Ensure Page Always Loads / Refreshes at the Hero Section (Top)
+  // 0. Reset Scroll Position & Handle Responsive Mobile Navigation Drawer
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
 
-  // Clear hash from URL without page jump/reload if hash exists on refresh
   if (window.location.hash) {
     history.replaceState(null, null, window.location.pathname + window.location.search);
   }
 
-  // Force scroll to top (Hero Section)
   window.scrollTo(0, 0);
   setTimeout(function() {
     window.scrollTo(0, 0);
   }, 10);
+
+  // Mobile Nav Toggle Logic
+  const mobileToggle = document.getElementById("mobile-toggle");
+  const mobileDrawer = document.getElementById("mobile-drawer");
+  const menuIcon = document.getElementById("menu-icon");
+
+  if (mobileToggle && mobileDrawer) {
+    mobileToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      const isOpen = mobileDrawer.classList.contains("open");
+      if (isOpen) {
+        mobileDrawer.classList.remove("open");
+        menuIcon.textContent = "☰";
+      } else {
+        mobileDrawer.classList.add("open");
+        menuIcon.textContent = "✕";
+      }
+    });
+
+    // Close mobile drawer when clicking any link inside
+    const mobileLinks = mobileDrawer.querySelectorAll("a");
+    mobileLinks.forEach(link => {
+      link.addEventListener("click", function() {
+        mobileDrawer.classList.remove("open");
+        menuIcon.textContent = "☰";
+      });
+    });
+
+    // Close when clicking outside header
+    document.addEventListener("click", function(e) {
+      if (!e.target.closest("#navbar")) {
+        mobileDrawer.classList.remove("open");
+        menuIcon.textContent = "☰";
+      }
+    });
+  }
 
   // 1. Intersection Observer for Scroll Reveals
   const revealElements = document.querySelectorAll(".reveal, .reveal-scale, .reveal-left, .reveal-right");
