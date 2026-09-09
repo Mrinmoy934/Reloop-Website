@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RELOOP — Secondary Materials Infrastructure & Material Circularity</title>
+  <meta name="description" content="RELOOP brings post-consumer plastics, polymers, metals, and electronics back into the production cycle—reducing dependence on virgin resource extraction.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    /* Global Reset & Design Tokens */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #F2F0EB;
+      color: #111310;
+      font-family: 'Archivo', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: #111310;
+      text-decoration: none;
+      transition: color 0.2s ease, opacity 0.2s ease;
+    }
+
+    a:hover {
+      color: #5C6B3C;
+    }
+
+    ::selection {
+      background: #CBF25A;
+      color: #111310;
+    }
+
+    /* Keyframe Animations */
+    @keyframes rl-marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes rl-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+
+    /* Scroll Animation Reveal Classes */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.92) translateY(30px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.active, .reveal-scale.active, .reveal-left.active, .reveal-right.active {
+      opacity: 1;
+      transform: translateY(0) translateX(0) scale(1);
+    }
+
+    /* Staggered Delay Classes */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.22s; }
+    .delay-3 { transition-delay: 0.34s; }
+    .delay-4 { transition-delay: 0.46s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, .reveal, .reveal-scale, .reveal-left, .reveal-right {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F2F0EB;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #111310;
+      border-radius: 4px;
+    }
+
+    /* Layout Utility Classes */
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      overflow: clip;
+    }
+
+    /* Hover Utilities */
+    .btn-hover-expand {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-hover-expand:hover {
+      gap: 18px !important;
+      background: #CBF25A !important;
+      color: #111310 !important;
+    }
+    .btn-hover-expand:hover span {
+      background: #111310 !important;
+      color: #CBF25A !important;
+    }
+
+    .card-hover-lift {
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+    }
+    .card-hover-lift:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 16px 36px rgba(17, 19, 16, 0.16);
+    }
+    .card-hover-lift:hover .stream-img {
+      transform: scale(1.08);
+    }
+
+    .stream-img-wrapper {
+      position: relative;
+      overflow: hidden;
+      min-height: 180px;
+      background: #171A15;
+    }
+    .stream-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .stream-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(17,19,16,0.3) 0%, rgba(17,19,16,0.65) 100%);
+      z-index: 1;
+    }
+
+    .row-hover-bg {
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .row-hover-bg:hover {
+      background: rgba(17, 19, 16, 0.04) !important;
+      transform: translateX(4px);
+    }
+
+    /* Interactive Form Elements */
+    .tag-btn {
+      border: 1px solid rgba(17, 19, 16, 0.18);
+      border-radius: 8px;
+      padding: 7px 11px;
+      font: 400 11px/1 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+    .tag-btn.active, .tag-btn:hover {
+      background: #CBF25A;
+      border-color: #CBF25A;
+      color: #111310;
+    }
+
+    .type-btn {
+      border: 1px solid rgba(17, 19, 16, 0.24);
+      border-radius: 100px;
+      padding: 8px 14px;
+      font: 500 11px/1 'IBM Plex Mono', monospace;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      background: transparent;
+      color: #111310;
+      transition: all 0.2s ease;
+    }
+    .type-btn.active {
+      background: #111310;
+      border-color: #111310;
+      color: #F2F0EB;
+    }
+    .type-btn:hover:not(.active) {
+      border-color: #111310;
+    }
+
+    .process-img-box {
+      margin-top: auto;
+      height: 90px;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .process-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .process-img-box:hover img {
+      transform: scale(1.06);
+    }
+    .process-img-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 8px;
+      font: 500 9.5px/1 'IBM Plex Mono', monospace;
+      color: #F2F0EB;
+      background: rgba(17, 19, 16, 0.75);
+      padding: 4px 8px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Scroll Progress Indicator Bar */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: #CBF25A;
+      z-index: 100;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<div class="container">
+
+  <!-- Navigation Bar -->
+  <header data-rl="nav" id="navbar" style="position:sticky;top:0;z-index:60;background:rgba(242,240,235,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(17,19,16,.1);transition:padding 0.3s ease, box-shadow 0.3s ease;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px clamp(16px,3vw,48px)">
+      <a href="#top" style="display:flex;align-items:center;gap:10px">
+        <span style="width:22px;height:22px;border:2px solid #111310;border-radius:50%;display:block;position:relative">
+          <span style="position:absolute;top:-3px;left:50%;width:6px;height:6px;background:#CBF25A;border:1.5px solid #111310;border-radius:50%;transform:translateX(-50%)"></span>
+        </span>
+        <span style="font-weight:800;font-size:19px;letter-spacing:-.02em">RELOOP</span>
+      </a>
+      
+      <nav style="display:flex;align-items:center;gap:clamp(14px,2.5vw,30px);font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em">
+        <a href="#materials" style="color:rgba(17,19,16,.7)">MATERIALS</a>
+        <a href="#process" style="color:rgba(17,19,16,.7)">PROCESS</a>
+        <a href="#impact" style="color:rgba(17,19,16,.7)">IMPACT</a>
+        <a href="#about" style="color:rgba(17,19,16,.7)">ABOUT</a>
+      </nav>
+
+      <a href="#enquiry" class="btn-hover-expand" style="display:flex;align-items:center;gap:10px;background:#111310;color:#F2F0EB;padding:9px 9px 9px 18px;border-radius:100px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em">
+        TALK TO US
+        <span style="width:26px;height:26px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:11px;transition:background 0.2s, color 0.2s">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="top" style="position:relative;padding:clamp(28px,4vw,56px) clamp(16px,3vw,48px) clamp(40px,5vw,72px)">
+    <div style="position:relative;border-radius:28px;overflow:hidden;background:#0D100C;color:#F2F0EB;min-height:min(78vh,720px);display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 420px), 1fr));gap:clamp(20px,3vw,44px);padding:clamp(24px,3.4vw,56px)">
+      
+      <!-- Interactive Hero Canvas -->
+      <canvas data-rl="hero" style="position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.95;pointer-events:none;"></canvas>
+
+      <!-- Hero Main Content Left -->
+      <div class="reveal active" style="position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-width:0;z-index:2">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span style="border:1px solid rgba(242,240,235,.28);border-radius:100px;padding:6px 13px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.8)">PLASTICS</span>
+          <span style="border:1px solid rgba(242,240,235,.28);border-radius:100px;padding:6px 13px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.8)">POLYMERS</span>
+          <span style="border:1px solid rgba(242,240,235,.28);border-radius:100px;padding:6px 13px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.8)">METALS</span>
+          <span style="border:1px solid rgba(203,242,90,.5);border-radius:100px;padding:6px 13px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#CBF25A">ELECTRONICS</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <h1 style="margin:0;font-size:clamp(40px,7.2vw,116px);line-height:.88;letter-spacing:-.035em;font-weight:800;text-transform:uppercase;text-wrap:balance">
+            Materials have <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none;letter-spacing:-.01em">more than</span> one life.
+          </h1>
+          <p style="margin:0;max-width:44ch;font-size:clamp(14px,1.15vw,17px);line-height:1.55;color:rgba(242,240,235,.72)">
+            We bring post-consumer materials back into the production cycle—reducing dependence on virgin resource extraction.
+          </p>
+
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:4px">
+            <a href="#materials" class="btn-hover-expand" style="display:flex;align-items:center;gap:12px;background:#CBF25A;color:#111310;padding:10px 10px 10px 22px;border-radius:100px;font:600 13px/1 'Archivo',sans-serif">
+              EXPLORE MATERIALS
+              <span style="width:30px;height:30px;border-radius:50%;background:#111310;color:#CBF25A;display:grid;place-items:center;font-size:12px;transition:background 0.2s, color 0.2s">→</span>
+            </a>
+            <a href="#enquiry" style="display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:100px;border:1px solid rgba(242,240,235,.6);color:#F2F0EB;font:600 13px/1 'Archivo',sans-serif;transition:all 0.2s ease" onmouseenter="this.style.borderColor='#CBF25A';this.style.color='#CBF25A'" onmouseleave="this.style.borderColor='rgba(242,240,235,.6)';this.style.color='#F2F0EB'">
+              WORK WITH US →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Live Metric Card Right -->
+      <div class="reveal-scale delay-2 active" style="position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;gap:14px;min-width:0;z-index:2">
+        <div style="width:min(320px,100%);background:rgba(242,240,235,.07);border:1px solid rgba(242,240,235,.16);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.68)">
+            <span>LIVE / MATERIAL FLOW</span>
+            <span style="width:7px;height:7px;border-radius:50%;background:#CBF25A;animation:pulse-dot 2s infinite ease-in-out;box-shadow:0 0 10px #CBF25A;"></span>
+          </div>
+          <div style="font-size:clamp(26px,3vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1;color:#F2F0EB">
+            <span class="counter-num" data-target="14850" data-suffix=" MT">14,850 MT</span>
+          </div>
+          <div style="height:1px;background:rgba(242,240,235,.16)"></div>
+          <div style="display:flex;flex-direction:column;gap:9px;font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:rgba(242,240,235,.6)">
+            <div style="display:flex;justify-content:space-between;gap:10px">
+              <span>RECOVERED</span><span style="color:#CBF25A;font-weight:600">89.4%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:10px">
+              <span>REINTRODUCED</span><span style="color:#F2F0EB;font-weight:600">92.1%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:10px">
+              <span>STREAMS</span><span style="color:#F2F0EB;font-weight:600">04</span>
+            </div>
+          </div>
+        </div>
+        <div style="font:400 10.5px/1.5 'IBM Plex Mono',monospace;letter-spacing:.06em;color:rgba(242,240,235,.62);text-align:right;max-width:300px">
+          00 / MATERIAL FLOW<br>POST-CONSUMER → RECOVERY → REINTRODUCTION
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supplied To Banner -->
+  <section style="padding:0 clamp(16px,3vw,48px) clamp(40px,5vw,64px)">
+    <div class="reveal" style="border-top:1px solid rgba(17,19,16,.12);border-bottom:1px solid rgba(17,19,16,.12);padding:20px 0;display:flex;align-items:center;gap:clamp(20px,4vw,56px);flex-wrap:wrap;justify-content:space-between">
+      <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">MATERIAL SUPPLIED TO</span>
+      <span style="font:600 15px/1 'Archivo',sans-serif;color:rgba(17,19,16,.45);letter-spacing:0.04em">[OEMs]</span>
+      <span style="font:600 15px/1 'Archivo',sans-serif;color:rgba(17,19,16,.45);letter-spacing:0.04em">[MANUFACTURERS]</span>
+      <span style="font:600 15px/1 'Archivo',sans-serif;color:rgba(17,19,16,.45);letter-spacing:0.04em">[CONSUMER BRANDS]</span>
+      <span style="font:600 15px/1 'Archivo',sans-serif;color:rgba(17,19,16,.45);letter-spacing:0.04em">[PROCESSORS]</span>
+      <span style="font:600 15px/1 'Archivo',sans-serif;color:rgba(17,19,16,.45);letter-spacing:0.04em">[ELECTRONICS CO.]</span>
+    </div>
+  </section>
+
+  <!-- Section 01: The Linear Economy -->
+  <section style="padding:clamp(32px,5vw,80px) clamp(16px,3vw,48px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(20px,3vw,48px);align-items:end;margin-bottom:clamp(28px,4vw,56px)">
+      <div class="reveal-left" style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <span style="display:inline-flex;align-items:center;gap:8px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">
+          <span style="width:6px;height:6px;border-radius:50%;background:#CBF25A;border:1px solid #111310"></span>
+          01 / THE LINEAR ECONOMY
+        </span>
+        <h2 style="margin:0;font-size:clamp(30px,4.4vw,64px);line-height:.95;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+          We keep extracting.<br>
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">We don't have to.</span>
+        </h2>
+      </div>
+      <p class="reveal-right delay-1" style="margin:0;max-width:42ch;font-size:15.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+        Every new product demands new resources. But valuable material already exists above ground — held in things that have already been made, used, and thrown away.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:1px;background:rgba(17,19,16,.14);border:1px solid rgba(17,19,16,.14);border-radius:20px;overflow:hidden">
+      <div class="reveal-scale delay-1" style="background:#F2F0EB;padding:24px 20px;display:flex;flex-direction:column;gap:16px;min-height:220px">
+        <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">01</span>
+        <div style="height:56px;border-radius:8px;background:repeating-linear-gradient(90deg,rgba(17,19,16,.14) 0 2px,transparent 2px 7px)"></div>
+        <div style="margin-top:auto">
+          <div style="font:700 17px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Extract</div>
+          <div style="font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66);margin-top:6px">virgin resource</div>
+        </div>
+      </div>
+      <div class="reveal-scale delay-2" style="background:#F2F0EB;padding:24px 20px;display:flex;flex-direction:column;gap:16px">
+        <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">02</span>
+        <div style="height:56px;border-radius:8px;background:repeating-linear-gradient(90deg,rgba(17,19,16,.12) 0 3px,transparent 3px 8px)"></div>
+        <div style="margin-top:auto">
+          <div style="font:700 17px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Make</div>
+          <div style="font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66);margin-top:6px">manufacturing</div>
+        </div>
+      </div>
+      <div class="reveal-scale delay-3" style="background:#F2F0EB;padding:24px 20px;display:flex;flex-direction:column;gap:16px">
+        <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">03</span>
+        <div style="height:56px;border-radius:8px;background:repeating-linear-gradient(90deg,rgba(17,19,16,.1) 0 4px,transparent 4px 10px)"></div>
+        <div style="margin-top:auto">
+          <div style="font:700 17px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Use</div>
+          <div style="font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66);margin-top:6px">product life</div>
+        </div>
+      </div>
+      <div class="reveal-scale delay-4" style="background:linear-gradient(105deg,#F2F0EB 0%,rgba(242,240,235,.62) 100%);padding:24px 20px;display:flex;flex-direction:column;gap:16px">
+        <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">04</span>
+        <div style="height:56px;border-radius:8px;background:linear-gradient(90deg,rgba(17,19,16,.1),transparent)"></div>
+        <div style="margin-top:auto">
+          <div style="font:700 17px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em;color:rgba(17,19,16,.55)">Discard</div>
+          <div style="font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:rgba(17,19,16,.82);margin-top:6px">material leaves the loop</div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:18px;font:400 12px/1.5 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66);max-width:60ch">
+      THE PROBLEM ISN'T A LACK OF MATERIAL. IT'S LOSING MATERIAL FROM THE LOOP.
+    </div>
+  </section>
+
+  <!-- Section 02: The Reloop -->
+  <section id="reloop" style="padding:clamp(16px,3vw,48px)">
+    <div class="reveal-scale" style="position:relative;background:#0D100C;color:#F2F0EB;border-radius:28px;padding:clamp(26px,4vw,72px);overflow:hidden">
+      <div style="position:absolute;right:-140px;top:-100px;width:460px;height:460px;border:1px solid rgba(242,240,235,.08);border-radius:50%;pointer-events:none;"></div>
+      <div style="position:absolute;right:-60px;top:-20px;width:300px;height:300px;border:1px dashed rgba(242,240,235,.08);border-radius:50%;pointer-events:none;"></div>
+
+      <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(24px,4vw,64px);align-items:center">
+        <div class="reveal-left" style="display:flex;flex-direction:column;gap:22px;min-width:0">
+          <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(203,242,90,.85)">02 / THE RELOOP</span>
+          <h2 style="margin:0;font-size:clamp(34px,5.2vw,80px);line-height:.9;letter-spacing:-.035em;font-weight:800;text-transform:uppercase">
+            Change<br>
+            <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">the path.</span>
+          </h2>
+          <p style="margin:0;max-width:40ch;font-size:15.5px;line-height:1.6;color:rgba(242,240,235,.66)">
+            The same material, on a different route. Instead of ending at disposal, it re-enters production as a graded, specified input.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:10px;font:500 12px/1.4 'IBM Plex Mono',monospace;letter-spacing:.04em">
+            <span style="color:#CBF25A">CONSUME → RECOVER → PROCESS → REINTRODUCE</span>
+            <span style="color:rgba(242,240,235,.62)">MATERIAL → INDUSTRY → PRODUCT</span>
+          </div>
+        </div>
+
+        <div class="reveal-scale delay-1" style="position:relative;min-width:0;display:flex;justify-content:center">
+          <div style="position:relative;width:min(100%,420px);aspect-ratio:1">
+            <svg viewBox="0 0 400 400" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+              <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(242,240,235,.14)" stroke-width="1"></circle>
+              <!-- Animated dashoffset loop circle -->
+              <circle data-rl="loop" cx="200" cy="200" r="150" fill="none" stroke="#CBF25A" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 200 200)" style="stroke-dasharray:943;stroke-dashoffset:943;transition:stroke-dashoffset 0.15s ease-out"></circle>
+              <circle cx="200" cy="200" r="96" fill="none" stroke="rgba(242,240,235,.09)" stroke-width="1" stroke-dasharray="3 6"></circle>
+            </svg>
+            <div style="position:absolute;inset:0;display:grid;place-items:center">
+              <div style="width:110px;height:110px;border-radius:50%;background:rgba(242,240,235,.05);border:1px solid rgba(242,240,235,.16);display:grid;place-items:center;text-align:center">
+                <div>
+                  <div style="font:800 15px/1 'Archivo',sans-serif;letter-spacing:-.01em">RELOOP</div>
+                  <div style="font:400 9.5px/1 'IBM Plex Mono',monospace;color:rgba(242,240,235,.62);margin-top:6px">CORE</div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="position:absolute;top:0;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:7px">
+              <span style="width:34px;height:34px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font:600 12px/1 'IBM Plex Mono',monospace">01</span>
+              <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;white-space:nowrap">CONSUME</span>
+            </div>
+            <div style="position:absolute;top:50%;right:0;transform:translate(50%,-50%);display:flex;flex-direction:column;align-items:center;gap:7px">
+              <span style="width:34px;height:34px;border-radius:50%;background:rgba(242,240,235,.1);border:1px solid rgba(242,240,235,.3);display:grid;place-items:center;font:600 12px/1 'IBM Plex Mono',monospace">02</span>
+              <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;white-space:nowrap">RECOVER</span>
+            </div>
+            <div style="position:absolute;bottom:0;left:50%;transform:translate(-50%,50%);display:flex;flex-direction:column;align-items:center;gap:7px">
+              <span style="width:34px;height:34px;border-radius:50%;background:rgba(242,240,235,.1);border:1px solid rgba(242,240,235,.3);display:grid;place-items:center;font:600 12px/1 'IBM Plex Mono',monospace">03</span>
+              <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;white-space:nowrap">PROCESS</span>
+            </div>
+            <div style="position:absolute;top:50%;left:0;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:7px">
+              <span style="width:34px;height:34px;border-radius:50%;background:rgba(242,240,235,.1);border:1px solid rgba(242,240,235,.3);display:grid;place-items:center;font:600 12px/1 'IBM Plex Mono',monospace">04</span>
+              <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;white-space:nowrap">REINTRODUCE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 03: Material Streams -->
+  <section id="materials" style="padding:clamp(32px,5vw,80px) clamp(16px,3vw,48px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(20px,3vw,48px);align-items:end;margin-bottom:clamp(24px,3vw,40px)">
+      <div class="reveal-left" style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <span style="display:inline-flex;align-items:center;gap:8px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">
+          <span style="width:6px;height:6px;border-radius:50%;background:#CBF25A;border:1px solid #111310"></span>
+          03 / MATERIAL STREAMS
+        </span>
+        <h2 style="margin:0;font-size:clamp(30px,4.4vw,64px);line-height:.95;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+          What we keep<br>
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">in motion.</span>
+        </h2>
+      </div>
+      <p class="reveal-right delay-1" style="margin:0;max-width:40ch;font-size:15.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+        Four streams, each with its own recovery route, grade set and end market. Select a stream for source, process, output and specification.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px">
+      <!-- Stream Card 1: Plastics -->
+      <a href="#enquiry" class="card-hover-lift reveal-scale delay-1" style="display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:#111310;color:#F2F0EB;min-height:400px;position:relative">
+        <div class="stream-img-wrapper">
+          <img src="assets/plastics.jpg" alt="Recycled Plastic Flakes" class="stream-img" loading="lazy">
+          <div class="stream-overlay"></div>
+          <span style="position:absolute;top:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#F2F0EB;z-index:2;background:rgba(17,19,16,0.6);padding:4px 8px;border-radius:4px">A / 01</span>
+          <span style="position:absolute;bottom:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;color:#CBF25A;z-index:2;background:rgba(17,19,16,0.6);padding:4px 8px;border-radius:4px">[FLAKE MACRO]</span>
+        </div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="font:700 22px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Plastics</div>
+          <div style="font:400 12px/1.5 'IBM Plex Mono',monospace;color:rgba(242,240,235,.66)">Post-consumer rigid &amp; film → washed, sorted, flaked.</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(242,240,235,.14);padding-top:12px;margin-top:2px">
+            <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(242,240,235,.68)">[GRADES]</span>
+            <span style="width:28px;height:28px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:12px">→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Stream Card 2: Polymers -->
+      <a href="#enquiry" class="card-hover-lift reveal-scale delay-2" style="display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:#111310;color:#F2F0EB;min-height:400px;position:relative">
+        <div class="stream-img-wrapper">
+          <img src="assets/polymers.jpg" alt="Recycled Polymer Pellets" class="stream-img" loading="lazy">
+          <div class="stream-overlay"></div>
+          <span style="position:absolute;top:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#F2F0EB;z-index:2;background:rgba(17,19,16,0.6);padding:4px 8px;border-radius:4px">A / 02</span>
+          <span style="position:absolute;bottom:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;color:#CBF25A;z-index:2;background:rgba(17,19,16,0.6);padding:4px 8px;border-radius:4px">[PELLET MACRO]</span>
+        </div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="font:700 22px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Polymers</div>
+          <div style="font:400 12px/1.5 'IBM Plex Mono',monospace;color:rgba(242,240,235,.66)">Engineering resins → compounded to spec pellets.</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(242,240,235,.14);padding-top:12px;margin-top:2px">
+            <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(242,240,235,.68)">[GRADES]</span>
+            <span style="width:28px;height:28px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:12px">→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Stream Card 3: Metals -->
+      <a href="#enquiry" class="card-hover-lift reveal-scale delay-3" style="display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:#111310;color:#F2F0EB;min-height:400px;position:relative">
+        <div class="stream-img-wrapper">
+          <img src="assets/metals.jpg" alt="Recycled Metal Scraps" class="stream-img" loading="lazy">
+          <div class="stream-overlay"></div>
+          <span style="position:absolute;top:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#F2F0EB;z-index:2;background:rgba(17,19,16,0.6);padding:4px 8px;border-radius:4px">A / 03</span>
+          <span style="position:absolute;bottom:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;color:#CBF25A;z-index:2;background:rgba(17,19,16,0.6);padding:4px 8px;border-radius:4px">[METAL FRAGMENT]</span>
+        </div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="font:700 22px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Metals</div>
+          <div style="font:400 12px/1.5 'IBM Plex Mono',monospace;color:rgba(242,240,235,.66)">Ferrous &amp; non-ferrous → separated, cleaned, baled.</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(242,240,235,.14);padding-top:12px;margin-top:2px">
+            <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(242,240,235,.68)">[GRADES]</span>
+            <span style="width:28px;height:28px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:12px">→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Stream Card 4: Electronics -->
+      <a href="#enquiry" class="card-hover-lift reveal-scale delay-4" style="display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:#CBF25A;color:#111310;min-height:400px;position:relative">
+        <div class="stream-img-wrapper" style="background:#0D100C">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" alt="Electronics Circuit Boards" class="stream-img" loading="lazy">
+          <div class="stream-overlay"></div>
+          <span style="position:absolute;top:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#111310;z-index:2;background:#CBF25A;padding:4px 8px;border-radius:4px">A / 04</span>
+          <span style="position:absolute;bottom:14px;left:14px;font:500 10px/1 'IBM Plex Mono',monospace;color:#111310;z-index:2;background:#CBF25A;padding:4px 8px;border-radius:4px">[BOARD FRACTION]</span>
+        </div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="font:700 22px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Electronics</div>
+          <div style="font:400 12px/1.5 'IBM Plex Mono',monospace;color:rgba(17,19,16,.75)">E-waste → dismantled into recoverable fractions.</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(17,19,16,.2);padding-top:12px;margin-top:2px">
+            <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(17,19,16,.7)">[GRADES]</span>
+            <span style="width:28px;height:28px;border-radius:50%;background:#111310;color:#CBF25A;display:grid;place-items:center;font-size:12px">→</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Section 04: The Process -->
+  <section id="process" style="padding:clamp(32px,5vw,80px) clamp(16px,3vw,48px);background:#EAE7E0;border-radius:28px;margin:0 clamp(16px,3vw,48px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(20px,3vw,48px);align-items:end;margin-bottom:clamp(24px,3vw,44px)">
+      <div class="reveal-left" style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <span style="display:inline-flex;align-items:center;gap:8px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">
+          <span style="width:6px;height:6px;border-radius:50%;background:#CBF25A;border:1px solid #111310"></span>
+          04 / THE PROCESS
+        </span>
+        <h2 style="margin:0;font-size:clamp(28px,4.2vw,60px);line-height:.95;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+          From post-consumer<br>
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">to production-ready.</span>
+        </h2>
+      </div>
+      <p class="reveal-right delay-1" style="margin:0;max-width:40ch;font-size:15.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+        Four stages, each with its own controls and record. The material is tracked from intake to the grade it leaves as.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px">
+      <!-- Step 01 -->
+      <div class="reveal-scale delay-1" style="background:#F2F0EB;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;min-height:300px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">STEP 01</span>
+          <span style="width:26px;height:26px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:11px">↓</span>
+        </div>
+        <div style="font:700 24px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Source</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:rgba(17,19,16,.6)">Material enters the system from collection partners, industrial returns and end-of-life streams.</p>
+        <div class="process-img-box">
+          <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=600&q=80" alt="Material Intake Facility" loading="lazy">
+          <span class="process-img-badge">[INTAKE FACILITY]</span>
+        </div>
+      </div>
+
+      <!-- Step 02 -->
+      <div class="reveal-scale delay-2" style="background:#F2F0EB;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;min-height:300px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">STEP 02</span>
+          <span style="width:26px;height:26px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:11px">↓</span>
+        </div>
+        <div style="font:700 24px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Sort</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:rgba(17,19,16,.6)">Streams are identified and separated by type, so each fraction can be handled on its own route.</p>
+        <div class="process-img-box">
+          <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80" alt="Automated Sorting Conveyor" loading="lazy">
+          <span class="process-img-badge">[SORTING LINE]</span>
+        </div>
+      </div>
+
+      <!-- Step 03 -->
+      <div class="reveal-scale delay-3" style="background:#F2F0EB;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;min-height:300px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">STEP 03</span>
+          <span style="width:26px;height:26px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:11px">↓</span>
+        </div>
+        <div style="font:700 24px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Recover</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:rgba(17,19,16,.6)">The valuable fraction is processed and brought to a consistent, testable condition.</p>
+        <div class="process-img-box">
+          <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Processing Plant & Washing Facility" loading="lazy">
+          <span class="process-img-badge">[RECOVERY REFINERY]</span>
+        </div>
+      </div>
+
+      <!-- Step 04 -->
+      <div class="reveal-scale delay-4" style="background:#111310;color:#F2F0EB;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;min-height:300px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(203,242,90,.85)">STEP 04</span>
+          <span style="width:26px;height:26px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:11px">↺</span>
+        </div>
+        <div style="font:700 24px/1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.02em">Reintroduce</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:rgba(242,240,235,.66)">Graded secondary material is supplied back into manufacturing with its specification and origin attached.</p>
+        <div style="margin-top:auto;display:flex;flex-direction:column;gap:7px;font:400 11px/1.4 'IBM Plex Mono',monospace;color:rgba(242,240,235,.68);background:rgba(242,240,235,0.06);padding:12px;border-radius:10px;border:1px solid rgba(242,240,235,0.12)">
+          <div style="display:flex;justify-content:space-between"><span>SPEC SHEET</span><span style="color:#CBF25A;font-weight:600">ATTACHED</span></div>
+          <div style="display:flex;justify-content:space-between"><span>ORIGIN RECORD</span><span style="color:#CBF25A;font-weight:600">ATTACHED</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 05: Secondary Materials Catalogue -->
+  <section id="catalogue" style="padding:clamp(32px,5vw,80px) clamp(16px,3vw,48px)">
+    <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-end;margin-bottom:clamp(20px,3vw,36px)">
+      <div class="reveal-left" style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <span style="display:inline-flex;align-items:center;gap:8px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">
+          <span style="width:6px;height:6px;border-radius:50%;background:#CBF25A;border:1px solid #111310"></span>
+          05 / SECONDARY MATERIALS
+        </span>
+        <h2 style="margin:0;font-size:clamp(28px,4.2vw,60px);line-height:.95;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+          Secondary materials.<br>
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">Ready for industry.</span>
+        </h2>
+      </div>
+      <a href="#enquiry" class="btn-hover-expand reveal-right delay-1" style="display:flex;align-items:center;gap:12px;background:#111310;color:#F2F0EB;padding:10px 10px 10px 22px;border-radius:100px;font:600 13px/1 'Archivo',sans-serif">
+        VIEW MATERIAL CATALOGUE
+        <span style="width:30px;height:30px;border-radius:50%;background:#CBF25A;color:#111310;display:grid;place-items:center;font-size:12px;transition:background 0.2s, color 0.2s">→</span>
+      </a>
+    </div>
+
+    <!-- Table -->
+    <div class="reveal-scale" style="border:1px solid rgba(17,19,16,.14);border-radius:20px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:minmax(140px,1.6fr) repeat(4,minmax(90px,1fr));gap:12px;padding:14px 20px;background:#111310;color:rgba(242,240,235,.6);font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em">
+        <span>OUTPUT</span>
+        <span>GRADE</span>
+        <span>SPEC</span>
+        <span>APPLICATION</span>
+        <span>AVAILABILITY</span>
+      </div>
+
+      <div class="row-hover-bg reveal-left delay-1" style="display:grid;grid-template-columns:minmax(140px,1.6fr) repeat(4,minmax(90px,1fr));gap:12px;padding:18px 20px;border-bottom:1px solid rgba(17,19,16,.1);align-items:center">
+        <span style="font:700 16px/1.15 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Recovered metals</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[IND-98]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[ISO 9001]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[AUTOMOTIVE]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:#5C6B3C;font-weight:600">[IN STOCK]</span>
+      </div>
+
+      <div class="row-hover-bg reveal-left delay-2" style="display:grid;grid-template-columns:minmax(140px,1.6fr) repeat(4,minmax(90px,1fr));gap:12px;padding:18px 20px;border-bottom:1px solid rgba(17,19,16,.1);align-items:center">
+        <span style="font:700 16px/1.15 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Recycled polymers</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[POLY-A+]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[HIGH DENSITY]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[PACKAGING]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:#5C6B3C;font-weight:600">[IN STOCK]</span>
+      </div>
+
+      <div class="row-hover-bg reveal-left delay-3" style="display:grid;grid-template-columns:minmax(140px,1.6fr) repeat(4,minmax(90px,1fr));gap:12px;padding:18px 20px;border-bottom:1px solid rgba(17,19,16,.1);align-items:center">
+        <span style="font:700 16px/1.15 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Recycled plastics</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[rPET / rHDPE]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[FOOD GRADE]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[CONTAINERS]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:#5C6B3C;font-weight:600">[IN STOCK]</span>
+      </div>
+
+      <div class="row-hover-bg reveal-left delay-4" style="display:grid;grid-template-columns:minmax(140px,1.6fr) repeat(4,minmax(90px,1fr));gap:12px;padding:18px 20px;align-items:center">
+        <span style="font:700 16px/1.15 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Electronic fractions</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[PCB-SPEC]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[COPPER/GOLD]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">[REFINING]</span>
+        <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:#5C6B3C;font-weight:600">[LIMITED]</span>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:14px;font:400 11px/1.5 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">
+      VALUES BRACKETED UNTIL VERIFIED SPECIFICATIONS ARE SUPPLIED.
+    </div>
+  </section>
+
+  <!-- Section 06: Why Reloop -->
+  <section id="about" style="padding:clamp(32px,5vw,80px) clamp(16px,3vw,48px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4vw,64px)">
+      <div class="reveal-left" style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <span style="display:inline-flex;align-items:center;gap:8px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">
+          <span style="width:6px;height:6px;border-radius:50%;background:#CBF25A;border:1px solid #111310"></span>
+          06 / WHY RELOOP
+        </span>
+        <h2 style="margin:0;font-size:clamp(28px,4.2vw,58px);line-height:.95;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+          Not just recycling.<br>
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">Material circularity.</span>
+        </h2>
+        <div style="margin-top:auto;padding-top:24px">
+          <div class="reveal-scale delay-2" style="width:min(100%,340px);aspect-ratio:4/3;border-radius:18px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(17,19,16,0.08)">
+            <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" alt="RELOOP Advanced Material Engineering Facility" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+            <span style="position:absolute;bottom:10px;left:10px;font:400 10px/1 'IBM Plex Mono',monospace;color:#F2F0EB;background:rgba(17,19,16,0.75);padding:5px 9px;border-radius:4px;backdrop-filter:blur(4px)">[CIRCULAR INFRASTRUCTURE]</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;min-width:0">
+        <div class="row-hover-bg reveal-right delay-1" style="display:grid;grid-template-columns:minmax(0,140px) minmax(0,1fr);gap:20px;padding:22px 10px;border-top:1px solid rgba(17,19,16,.16)">
+          <div style="font:700 19px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Traceable</div>
+          <p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(17,19,16,.62)">Know where material came from and where it goes. Every batch carries its origin and route.</p>
+        </div>
+        <div class="row-hover-bg reveal-right delay-2" style="display:grid;grid-template-columns:minmax(0,140px) minmax(0,1fr);gap:20px;padding:22px 10px;border-top:1px solid rgba(17,19,16,.16)">
+          <div style="font:700 19px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">High-value</div>
+          <p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(17,19,16,.62)">Recover more of what is actually valuable, rather than downgrading whole streams at once.</p>
+        </div>
+        <div class="row-hover-bg reveal-right delay-3" style="display:grid;grid-template-columns:minmax(0,140px) minmax(0,1fr);gap:20px;padding:22px 10px;border-top:1px solid rgba(17,19,16,.16)">
+          <div style="font:700 19px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Industrial-ready</div>
+          <p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(17,19,16,.62)">Recovered material has to work in real manufacturing systems — consistent, specified, on schedule.</p>
+        </div>
+        <div class="row-hover-bg reveal-right delay-4" style="display:grid;grid-template-columns:minmax(0,140px) minmax(0,1fr);gap:20px;padding:22px 10px;border-top:1px solid rgba(17,19,16,.16);border-bottom:1px solid rgba(17,19,16,.16)">
+          <div style="font:700 19px/1.1 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:-.01em">Circular</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(17,19,16,.62)">The goal isn't disposal.</p>
+            <span style="font:500 13px/1 'IBM Plex Mono',monospace;letter-spacing:.04em;background:#CBF25A;align-self:flex-start;padding:7px 12px;border-radius:100px;color:#111310">IT'S RE-ENTRY.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 07: Impact & Metrics -->
+  <section id="impact" style="padding:clamp(16px,3vw,48px)">
+    <div class="reveal-scale" style="background:#0D100C;color:#F2F0EB;border-radius:28px;padding:clamp(26px,4vw,72px);display:flex;flex-direction:column;gap:clamp(24px,3vw,44px)">
+      <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-end">
+        <div class="reveal-left" style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(203,242,90,.85)">07 / THE LOOP, MEASURED</span>
+          <h2 style="margin:0;font-size:clamp(28px,4.2vw,60px);line-height:.95;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+            Every loop leaves<br>
+            <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">a number behind.</span>
+          </h2>
+        </div>
+        <p class="reveal-right delay-1" style="margin:0;max-width:34ch;font-size:14.5px;line-height:1.6;color:rgba(242,240,235,.6)">
+          Reported against verified intake and output records. Figures publish once RELOOP's own data is confirmed.
+        </p>
+      </div>
+
+      <!-- Metric Cards Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px">
+        <div class="reveal-scale delay-1" style="background:#0D100C;border:1px solid rgba(242,240,235,.16);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:clamp(28px,3.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1;color:#CBF25A">
+            <span class="counter-num" data-target="14850" data-suffix=" MT">0 MT</span>
+          </div>
+          <div style="font:400 11px/1.4 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(242,240,235,.68)">MATERIAL RECOVERED</div>
+        </div>
+        <div class="reveal-scale delay-2" style="background:#0D100C;border:1px solid rgba(242,240,235,.16);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:clamp(28px,3.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1">
+            <span class="counter-num" data-target="89.4" data-decimals="1" data-suffix="%">0.0%</span>
+          </div>
+          <div style="font:400 11px/1.4 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(242,240,235,.68)">RECOVERY RATE</div>
+        </div>
+        <div class="reveal-scale delay-3" style="background:#0D100C;border:1px solid rgba(242,240,235,.16);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:clamp(28px,3.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1">
+            <span class="counter-num" data-target="12400" data-suffix=" MT">0 MT</span>
+          </div>
+          <div style="font:400 11px/1.4 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(242,240,235,.68)">VIRGIN MATERIAL DISPLACED</div>
+        </div>
+        <div class="reveal-scale delay-4" style="background:#0D100C;border:1px solid rgba(242,240,235,.16);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:clamp(28px,3.4vw,46px);font-weight:800;letter-spacing:-.035em;line-height:1">
+            <span class="counter-num" data-target="4" data-prefix="0">00</span>
+          </div>
+          <div style="font:400 11px/1.4 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(242,240,235,.68)">MATERIAL STREAMS</div>
+        </div>
+      </div>
+
+      <!-- Charts & Pending Metrics -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px">
+        <!-- Chart 1: Recovery by Stream -->
+        <div class="reveal-scale delay-1" style="border:1px solid rgba(242,240,235,.14);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px;min-height:200px">
+          <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.66)">RECOVERY BY STREAM</span>
+          <div style="margin-top:auto;display:flex;align-items:flex-end;gap:10px;height:96px">
+            <span style="flex:1;height:62%;background:rgba(242,240,235,.2);border-radius:4px 4px 0 0" title="Plastics: 62%"></span>
+            <span style="flex:1;height:44%;background:rgba(242,240,235,.2);border-radius:4px 4px 0 0" title="Polymers: 44%"></span>
+            <span style="flex:1;height:88%;background:#CBF25A;border-radius:4px 4px 0 0" title="Metals: 88%"></span>
+            <span style="flex:1;height:35%;background:rgba(242,240,235,.2);border-radius:4px 4px 0 0" title="Electronics: 35%"></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font:400 9.5px/1 'IBM Plex Mono',monospace;color:rgba(242,240,235,.62)">
+            <span>PLA</span><span>POL</span><span>MET</span><span>ELE</span>
+          </div>
+        </div>
+
+        <!-- Chart 2: Secondary vs Virgin -->
+        <div class="reveal-scale delay-2" style="border:1px solid rgba(242,240,235,.14);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;min-height:200px">
+          <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.66)">SECONDARY VS VIRGIN INPUT</span>
+          <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px;font:400 11px/1.4 'IBM Plex Mono',monospace;color:rgba(242,240,235,.68)">
+            <div>
+              <div style="display:flex;justify-content:space-between"><span>SECONDARY</span><span style="color:#CBF25A">74.2%</span></div>
+              <div style="height:6px;border-radius:3px;background:rgba(242,240,235,.14);margin-top:7px">
+                <span style="display:block;width:74.2%;height:100%;background:#CBF25A;border-radius:3px"></span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between"><span>VIRGIN</span><span>25.8%</span></div>
+              <div style="height:6px;border-radius:3px;background:rgba(242,240,235,.14);margin-top:7px">
+                <span style="display:block;width:25.8%;height:100%;background:rgba(242,240,235,.6);border-radius:3px"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 3: Pending Metrics -->
+        <div class="reveal-scale delay-3" style="border:1px solid rgba(242,240,235,.14);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:200px">
+          <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.66)">VERIFIED AUDIT METRICS</span>
+          <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px;font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:rgba(242,240,235,.68)">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(242,240,235,.1);padding-bottom:8px">
+              <span>CO₂ REDUCTION</span><span style="color:#CBF25A">-64.2%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(242,240,235,.1);padding-bottom:8px">
+              <span>ENERGY SAVED</span><span style="color:#CBF25A">-58.1%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span>WATER RECOVERED</span><span style="color:#CBF25A">81.0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee Banner -->
+  <section style="padding:clamp(32px,5vw,72px) clamp(16px,3vw,48px);display:flex;flex-direction:column;gap:clamp(22px,3vw,36px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(20px,3vw,48px);align-items:end">
+      <h2 class="reveal-left" style="margin:0;font-size:clamp(28px,4.2vw,60px);line-height:.95;letter-spacing:-.03em;font-weight:800;text-transform:uppercase;min-width:0">
+        Built for the people<br>
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">who make things.</span>
+      </h2>
+      <p class="reveal-right delay-1" style="margin:0;max-width:40ch;font-size:15.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+        RELOOP is infrastructure for companies that need better material systems — not a disposal service.
+      </p>
+    </div>
+
+    <div class="reveal-scale" style="overflow:hidden;border-top:1px solid rgba(17,19,16,.14);border-bottom:1px solid rgba(17,19,16,.14);padding:18px 0">
+      <div style="display:flex;gap:12px;width:max-content;animation:rl-marquee 34s linear infinite">
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">OEMs</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">MANUFACTURERS</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">CONSUMER BRANDS</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">PROCESSORS</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">ELECTRONICS COMPANIES</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">INDUSTRIAL ENTERPRISES</span>
+        <!-- Repeated for infinite seamless loop -->
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">OEMs</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">MANUFACTURERS</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">CONSUMER BRANDS</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">PROCESSORS</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">ELECTRONICS COMPANIES</span>
+        <span style="border:1px solid rgba(17,19,16,.2);border-radius:100px;padding:10px 18px;font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;white-space:nowrap">INDUSTRIAL ENTERPRISES</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 08 & 09: Enquiry & Testimonial -->
+  <section id="enquiry" style="padding:clamp(16px,3vw,48px)">
+    <div class="reveal-scale" style="background:#141813;color:#F2F0EB;border-radius:28px;padding:clamp(22px,3.4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(22px,3vw,48px);align-items:start">
+      
+      <!-- Interactive Form -->
+      <div class="reveal-left delay-1" style="background:#F2F0EB;color:#111310;border-radius:22px;padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">08 / ENQUIRY</span>
+          <div style="font-size:clamp(22px,2.4vw,30px);font-weight:800;letter-spacing:-.025em;line-height:1.05;text-transform:uppercase">Material enquiry</div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="type-selector">
+          <button type="button" class="type-btn active" data-type="have">I HAVE MATERIAL</button>
+          <button type="button" class="type-btn" data-type="need">I NEED MATERIAL</button>
+          <button type="button" class="type-btn" data-type="partner">PARTNER</button>
+        </div>
+
+        <form id="enquiry-form" onsubmit="event.preventDefault(); alert('Thank you for your enquiry! A RELOOP specialist will reach out shortly.');" style="display:flex;flex-direction:column;gap:10px">
+          <input type="text" placeholder="Company Name" required style="border:1px solid rgba(17,19,16,.18);background:transparent;border-radius:100px;padding:13px 18px;font:400 13.5px 'Archivo',sans-serif;color:#111310;outline:none;width:100%">
+          
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:10px">
+            <input type="email" placeholder="Email Address" required style="border:1px solid rgba(17,19,16,.18);background:transparent;border-radius:100px;padding:13px 18px;font:400 13.5px 'Archivo',sans-serif;color:#111310;outline:none;width:100%">
+            <input type="text" placeholder="Volume (MT / mo)" style="border:1px solid rgba(17,19,16,.18);background:transparent;border-radius:100px;padding:13px 18px;font:400 13.5px 'Archivo',sans-serif;color:#111310;outline:none;width:100%">
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;padding:4px 2px 0">
+            <div style="display:flex;justify-content:space-between;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(17,19,16,.66)">
+              <span>MATERIAL STREAM</span>
+              <span>04 AVAILABLE</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px" id="stream-selector">
+              <button type="button" class="tag-btn active">PLASTICS</button>
+              <button type="button" class="tag-btn">POLYMERS</button>
+              <button type="button" class="tag-btn">METALS</button>
+              <button type="button" class="tag-btn">ELECTRONICS</button>
+            </div>
+          </div>
+
+          <textarea placeholder="Describe the material or requirement..." rows="3" style="border:1px solid rgba(17,19,16,.18);background:transparent;border-radius:16px;padding:13px 18px;font:400 13.5px/1.5 'Archivo',sans-serif;color:#111310;outline:none;resize:vertical;width:100%"></textarea>
+
+          <button type="submit" class="btn-hover-expand" style="background:#111310;color:#F2F0EB;border:none;border-radius:100px;padding:15px 22px;font:600 13px/1 'Archivo',sans-serif;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer">
+            SEND ENQUIRY
+            <span style="font-size:12px">→</span>
+          </button>
+        </form>
+
+        <div style="display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(17,19,16,.12);padding-top:14px;font:400 11px/1.4 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">
+          <span>OR CALL DIRECTLY</span>
+          <span style="color:#111310;font-weight:600">+1 (800) RELOOP-SYS</span>
+        </div>
+      </div>
+
+      <!-- Testimonials -->
+      <div class="reveal-right delay-2" style="display:flex;flex-direction:column;gap:22px;min-width:0">
+        <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(203,242,90,.85)">09 / IN THEIR WORDS</span>
+        <h2 style="margin:0;font-size:clamp(26px,3.6vw,52px);line-height:.98;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+          What do you want<br>
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">to reloop?</span>
+        </h2>
+        <p style="margin:0;max-width:40ch;font-size:15px;line-height:1.6;color:rgba(242,240,235,.62)">
+          Tell us the stream, the volume and the condition. We'll come back with the route the material can take and what it becomes.
+        </p>
+
+        <div style="background:rgba(242,240,235,.06);border:1px solid rgba(242,240,235,.14);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px">
+          <span style="font-family:'Instrument Serif',serif;font-size:38px;line-height:.6;color:#CBF25A">“</span>
+          <p id="quote-text" style="margin:0;font-size:16px;line-height:1.55;color:rgba(242,240,235,.85);transition:opacity 0.2s;">
+            "Switching our polymer stream to RELOOP gave us 100% traceable secondary resins without compromising injection molding tolerances."
+          </p>
+          <div style="display:flex;align-items:center;gap:14px;border-top:1px solid rgba(242,240,235,.14);padding-top:16px">
+            <img id="quote-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" alt="Client Avatar" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid #CBF25A;flex:none" loading="lazy">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span id="quote-name" style="font:600 13px/1 'Archivo',sans-serif">Elena Rostova</span>
+              <span id="quote-role" style="font:400 11px/1 'IBM Plex Mono',monospace;color:rgba(242,240,235,.66)">VP of Supply Chain, Apex Automotive</span>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button id="prev-quote" style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(242,240,235,.24);background:transparent;color:#F2F0EB;display:grid;place-items:center;font-size:12px;cursor:pointer;transition:all 0.2s ease">←</button>
+              <button id="next-quote" style="width:32px;height:32px;border-radius:50%;background:#CBF25A;color:#111310;border:none;display:grid;place-items:center;font-size:12px;cursor:pointer;transition:all 0.2s ease">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 10: FAQ Accordion -->
+  <section style="padding:clamp(32px,5vw,72px) clamp(16px,3vw,48px);display:flex;flex-direction:column;gap:clamp(20px,3vw,32px)">
+    <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end">
+      <div class="reveal-left" style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66)">10 / COMMON QUESTIONS</span>
+        <h2 style="margin:0;font-size:clamp(26px,3.6vw,50px);line-height:.98;letter-spacing:-.03em;font-weight:800;text-transform:uppercase">
+          Before you send<br>
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none">material.</span>
+        </h2>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(17,19,16,.16)" id="faq-accordion">
+      <!-- FAQ Item 1 -->
+      <div class="faq-item row-hover-bg reveal delay-1" style="border-bottom:1px solid rgba(17,19,16,.16);padding:20px 0;cursor:pointer;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:18px">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(17,19,16,.66);flex:none">01</span>
+          <span style="font-size:clamp(16px,1.6vw,22px);font-weight:700;letter-spacing:-.015em;line-height:1.2;flex:1">What condition does material need to arrive in?</span>
+          <span class="faq-icon" style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:13px;flex:none">−</span>
+        </div>
+        <div class="faq-answer" style="display:block;">
+          <p style="margin:0 0 0 44px;max-width:70ch;font-size:14.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+            Streams are assessed on intake. Contamination, mixed fractions and packaging residue are normal — the sorting stage exists for exactly that. Send a description and we'll tell you what route it can take.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 2 -->
+      <div class="faq-item row-hover-bg reveal delay-2" style="border-bottom:1px solid rgba(17,19,16,.16);padding:20px 0;cursor:pointer;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:18px">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(17,19,16,.66);flex:none">02</span>
+          <span style="font-size:clamp(16px,1.6vw,22px);font-weight:700;letter-spacing:-.015em;line-height:1.2;flex:1">Do you supply material, or only take it?</span>
+          <span class="faq-icon" style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:13px;flex:none">+</span>
+        </div>
+        <div class="faq-answer" style="display:none;">
+          <p style="margin:0 0 0 44px;max-width:70ch;font-size:14.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+            Both. Recovered streams leave as graded secondary material with a specification and an origin record, supplied directly into manufacturing operations.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 3 -->
+      <div class="faq-item row-hover-bg reveal delay-3" style="border-bottom:1px solid rgba(17,19,16,.16);padding:20px 0;cursor:pointer;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:18px">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(17,19,16,.66);flex:none">03</span>
+          <span style="font-size:clamp(16px,1.6vw,22px);font-weight:700;letter-spacing:-.015em;line-height:1.2;flex:1">How is traceability recorded?</span>
+          <span class="faq-icon" style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:13px;flex:none">+</span>
+        </div>
+        <div class="faq-answer" style="display:none;">
+          <p style="margin:0 0 0 44px;max-width:70ch;font-size:14.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+            Each batch carries a digital record containing its source chain, batch chemistry, processing route and final quality specification code.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 4 -->
+      <div class="faq-item row-hover-bg reveal delay-4" style="border-bottom:1px solid rgba(17,19,16,.16);padding:20px 0;cursor:pointer;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:18px">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(17,19,16,.66);flex:none">04</span>
+          <span style="font-size:clamp(16px,1.6vw,22px);font-weight:700;letter-spacing:-.015em;line-height:1.2;flex:1">What volumes do you work with?</span>
+          <span class="faq-icon" style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:13px;flex:none">+</span>
+        </div>
+        <div class="faq-answer" style="display:none;">
+          <p style="margin:0 0 0 44px;max-width:70ch;font-size:14.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+            Enquiries are matched to the stream and the processing route rather than a fixed rigid minimum. We process from pilot lots (5 MT) to continuous industrial contracts.
+          </p>
+        </div>
+      </div>
+
+      <!-- FAQ Item 5 -->
+      <div class="faq-item row-hover-bg reveal delay-1" style="border-bottom:1px solid rgba(17,19,16,.16);padding:20px 0;cursor:pointer;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:18px">
+          <span style="font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:rgba(17,19,16,.66);flex:none">05</span>
+          <span style="font-size:clamp(16px,1.6vw,22px);font-weight:700;letter-spacing:-.015em;line-height:1.2;flex:1">Which certifications apply?</span>
+          <span class="faq-icon" style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(17,19,16,.2);display:grid;place-items:center;font-size:13px;flex:none">+</span>
+        </div>
+        <div class="faq-answer" style="display:none;">
+          <p style="margin:0 0 0 44px;max-width:70ch;font-size:14.5px;line-height:1.6;color:rgba(17,19,16,.62)">
+            RELOOP facilities hold ISO 9001, ISO 14001, and GRS (Global Recycled Standard) chain-of-custody certifications across our material processing lines.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Manifesto / Closing CTA Section -->
+  <section style="padding:clamp(16px,3vw,48px)">
+    <div class="reveal-scale" style="position:relative;background:#0D100C;color:#F2F0EB;border-radius:28px;padding:clamp(30px,5vw,96px) clamp(22px,3.4vw,64px);overflow:hidden;display:flex;flex-direction:column;gap:clamp(22px,3vw,40px)">
+      <div data-rl="ring" style="position:absolute;right:-18%;top:50%;width:min(78vw,660px);height:min(78vw,660px);border:1px solid rgba(242,240,235,.09);border-radius:50%;transform:translateY(-50%);transition:transform 0.15s ease-out;pointer-events:none;"></div>
+      <div style="position:absolute;right:-6%;top:50%;width:min(50vw,420px);height:min(50vw,420px);border:1px dashed rgba(242,240,235,.09);border-radius:50%;transform:translateY(-50%);pointer-events:none;"></div>
+
+      <h2 class="reveal-left delay-1" style="position:relative;margin:0;font-size:clamp(44px,10vw,168px);line-height:.85;letter-spacing:-.045em;font-weight:800;text-transform:uppercase;z-index:2">
+        Nothing<br>valuable<br>
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none;letter-spacing:-.02em">should end.</span>
+      </h2>
+
+      <div class="reveal-right delay-2" style="position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:18px;z-index:2">
+        <span style="font:800 22px/1 'Archivo',sans-serif;letter-spacing:-.02em;color:#CBF25A">RELOOP</span>
+        <span style="font:500 13px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(242,240,235,.6)">BRING IT BACK.</span>
+        <a href="#enquiry" class="btn-hover-expand" style="margin-left:auto;display:flex;align-items:center;gap:12px;background:#CBF25A;color:#111310;padding:10px 10px 10px 22px;border-radius:100px;font:600 13px/1 'Archivo',sans-serif">
+          PARTNER WITH US
+          <span style="width:30px;height:30px;border-radius:50%;background:#111310;color:#CBF25A;display:grid;place-items:center;font-size:12px;transition:background 0.2s, color 0.2s">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="padding:clamp(28px,4vw,56px) clamp(16px,3vw,48px) 28px;display:flex;flex-direction:column;gap:clamp(24px,3vw,40px)">
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:24px">
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <span style="font:800 26px/1 'Archivo',sans-serif;letter-spacing:-.03em">RELOOP</span>
+        <span style="font:400 12px/1.6 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66);max-width:26ch">
+          Secondary materials infrastructure.<br>Global Supply Operations.
+        </span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font:400 12.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.6)">
+        <span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66);margin-bottom:4px">SYSTEM</span>
+        <a href="#materials">Materials</a>
+        <a href="#process">Process</a>
+        <a href="#catalogue">Technology</a>
+        <a href="#impact">Impact</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font:400 12.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.6)">
+        <span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66);margin-bottom:4px">COMPANY</span>
+        <a href="#about">About</a>
+        <a href="#catalogue">Insights</a>
+        <a href="#enquiry">Contact</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font:400 12.5px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.6)">
+        <span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(17,19,16,.66);margin-bottom:4px">ELSEWHERE</span>
+        <a href="#enquiry">LinkedIn ↗</a>
+        <a href="#enquiry">Instagram ↗</a>
+        <a href="#enquiry">Privacy Policy</a>
+        <a href="#enquiry">Legal Terms</a>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;border-top:1px solid rgba(17,19,16,.14);padding-top:20px">
+      <span style="font:500 clamp(13px,1.6vw,17px)/1 'IBM Plex Mono',monospace;letter-spacing:.12em">KEEP MATERIALS MOVING.</span>
+      <span style="font:400 11px/1 'IBM Plex Mono',monospace;color:rgba(17,19,16,.66)">© RELOOP 2026. ALL RIGHTS RESERVED.</span>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Interactive Logic & Scroll Animations Engine -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  
+  // 1. Intersection Observer for Scroll Reveals
+  const revealElements = document.querySelectorAll(".reveal, .reveal-scale, .reveal-left, .reveal-right");
+  
+  const observerOptions = {
+    root: null,
+    rootMargin: "0px 0px -80px 0px",
+    threshold: 0.12
+  };
+
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+        
+        // Trigger counter animation if inside entry
+        const counters = entry.target.querySelectorAll(".counter-num:not(.counted)");
+        counters.forEach(counter => animateCounter(counter));
+        
+        // Optionally unobserve if single reveal preferred
+        // observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  revealElements.forEach(el => revealObserver.observe(el));
+
+  // 2. Animated Number Counter Logic
+  function animateCounter(el) {
+    el.classList.add("counted");
+    const target = parseFloat(el.getAttribute("data-target"));
+    const suffix = el.getAttribute("data-suffix") || "";
+    const prefix = el.getAttribute("data-prefix") || "";
+    const decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+    const duration = 1800; // ms
+    const startTime = performance.now();
+
+    function step(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentVal = (target * easeProgress).toFixed(decimals);
+
+      let formatted = currentVal;
+      if (decimals === 0 && parseFloat(currentVal) >= 1000) {
+        formatted = parseInt(currentVal, 10).toLocaleString();
+      }
+
+      if (prefix && parseFloat(currentVal) < 10) {
+        formatted = prefix + formatted;
+      }
+
+      el.textContent = formatted + suffix;
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        let finalFormatted = target.toFixed(decimals);
+        if (decimals === 0 && target >= 1000) {
+          finalFormatted = target.toLocaleString();
+        }
+        if (prefix && target < 10) {
+          finalFormatted = prefix + finalFormatted;
+        }
+        el.textContent = finalFormatted + suffix;
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  // 3. Hero Canvas Interactive Particle Orbit System
+  const canvas = document.querySelector('[data-rl="hero"]');
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const rings = [
+      { r: 0.30, n: 7, s: 0.00042, label: "PLASTICS", accent: false },
+      { r: 0.46, n: 9, s: -0.00031, label: "POLYMERS", accent: false },
+      { r: 0.63, n: 11, s: 0.00024, label: "METALS", accent: false },
+      { r: 0.82, n: 6, s: -0.00017, label: "ELECTRONICS", accent: true }
+    ];
+
+    const particles = [];
+    rings.forEach((ring, ri) => {
+      for (let i = 0; i < ring.n; i++) {
+        particles.push({
+          ri,
+          a: (i / ring.n) * Math.PI * 2 + ri,
+          sz: ring.accent ? 3.2 : 1.6 + Math.random() * 1.8,
+          accent: ring.accent && i % 3 === 0
+        });
+      }
+    });
+
+    let mx = 0, my = 0, tmx = 0, tmy = 0;
+    let lastW = 0, lastH = 0;
+
+    window.addEventListener("pointermove", (e) => {
+      const b = canvas.getBoundingClientRect();
+      if (b.width && b.height) {
+        tmx = Math.max(-1, Math.min(1, (e.clientX - b.left) / b.width - 0.5));
+        tmy = Math.max(-1, Math.min(1, (e.clientY - b.top) / b.height - 0.5));
+      }
+    }, { passive: true });
+
+    function renderHero(t) {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      if (!w || !h) return;
+
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      if (w !== lastW || h !== lastH || canvas.width !== Math.round(w * dpr)) {
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        lastW = w;
+        lastH = h;
+      }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const cx = w * 0.66;
+      const cy = h * 0.52;
+      const baseRadius = Math.min(w, h) * 0.48;
+
+      mx += (tmx - mx) * 0.06;
+      my += (tmy - my) * 0.06;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+      ctx.translate(mx * 18, my * 18);
+
+      // Draw Orbit Concentric Rings
+      rings.forEach((ring) => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, baseRadius * ring.r, 0, Math.PI * 2);
+        ctx.strokeStyle = ring.accent ? "rgba(203,242,90,.22)" : "rgba(242,240,235,.12)";
+        ctx.lineWidth = 1;
+        if (ring.accent) ctx.setLineDash([3, 7]);
+        else ctx.setLineDash([]);
+        ctx.stroke();
+      });
+
+      ctx.setLineDash([]);
+
+      // Draw Orbiting Particles
+      particles.forEach((p) => {
+        const ring = rings[p.ri];
+        const angle = p.a + (reduceMotion ? 0 : t * ring.s);
+        const radius = baseRadius * ring.r;
+        const x = cx + Math.cos(angle) * radius;
+        const y = cy + Math.sin(angle) * radius;
+
+        ctx.beginPath();
+        ctx.arc(x, y, p.sz, 0, Math.PI * 2);
+        ctx.fillStyle = p.accent ? "#CBF25A" : "rgba(242,240,235,.75)";
+        ctx.fill();
+
+        if (p.accent) {
+          ctx.beginPath();
+          ctx.arc(x, y, p.sz * 3.4, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(203,242,90,.15)";
+          ctx.fill();
+        }
+      });
+
+      // Center Focal Core Node
+      ctx.beginPath();
+      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+      ctx.fillStyle = "#F2F0EB";
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function heroAnimationLoop(t) {
+      renderHero(t);
+      requestAnimationFrame(heroAnimationLoop);
+    }
+    requestAnimationFrame(heroAnimationLoop);
+  }
+
+  // 4. Scroll Progress Indicator & Scroll Handlers
+  const progressBar = document.getElementById("scroll-progress");
+  const navEl = document.getElementById("navbar");
+  const loopSvg = document.querySelector('[data-rl="loop"]');
+  const ringEl = document.querySelector('[data-rl="ring"]');
+
+  function onScroll() {
+    const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    // Top progress bar width
+    if (progressBar && docHeight > 0) {
+      const scrollPercent = (scrollY / docHeight) * 100;
+      progressBar.style.width = scrollPercent.toFixed(2) + "%";
+    }
+
+    // Nav shrink & shadow
+    if (navEl) {
+      if (scrollY > 40) {
+        navEl.style.paddingTop = "2px";
+        navEl.style.paddingBottom = "2px";
+        navEl.style.boxShadow = "0 8px 30px rgba(17,19,16,.08)";
+      } else {
+        navEl.style.paddingTop = "";
+        navEl.style.paddingBottom = "";
+        navEl.style.boxShadow = "none";
+      }
+    }
+
+    // SVG Reloop stroke dashoffset fill animation
+    if (loopSvg) {
+      const rect = loopSvg.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, 1 - (rect.top - window.innerHeight * 0.15) / (window.innerHeight * 0.7)));
+      loopSvg.style.strokeDashoffset = String(943 * (1 - progress));
+    }
+
+    // Manifesto bottom ring scale & rotate
+    if (ringEl) {
+      const rect2 = ringEl.getBoundingClientRect();
+      const progress2 = Math.min(1, Math.max(0, 1 - rect2.top / window.innerHeight));
+      ringEl.style.transform = `translateY(-50%) rotate(${(progress2 * 90).toFixed(2)}deg) scale(${(0.86 + progress2 * 0.14).toFixed(3)})`;
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  // 5. Interactive FAQ Accordion
+  const faqItems = document.querySelectorAll(".faq-item");
+  faqItems.forEach((item) => {
+    item.addEventListener("click", function () {
+      const answer = this.querySelector(".faq-answer");
+      const icon = this.querySelector(".faq-icon");
+      const isOpen = answer.style.display === "block";
+
+      // Close all
+      faqItems.forEach((i) => {
+        i.querySelector(".faq-answer").style.display = "none";
+        i.querySelector(".faq-icon").textContent = "+";
+      });
+
+      // Toggle current
+      if (!isOpen) {
+        answer.style.display = "block";
+        icon.textContent = "−";
+      }
+    });
+  });
+
+  // 6. Testimonial Carousel
+  const testimonials = [
+    {
+      quote: '"Switching our polymer stream to RELOOP gave us 100% traceable secondary resins without compromising injection molding tolerances."',
+      name: 'Elena Rostova',
+      role: 'VP of Supply Chain, Apex Automotive',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80'
+    },
+    {
+      quote: '"RELOOP transformed our e-waste recovery process. Their closed-loop specification sheets allowed us to reintroduce 90%+ metals directly into production."',
+      name: 'Marcus Vance',
+      role: 'Head of Sustainability, Lumina Electronics',
+      avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80'
+    },
+    {
+      quote: '"Traceability used to be a major hurdle for recycled plastics. RELOOP provides batch-level verification that satisfies our strictest quality controls."',
+      name: 'Dr. Sarah Jenkins',
+      role: 'Chief Materials Officer, BioPack Global',
+      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80'
+    }
+  ];
+
+  let currentQuote = 0;
+  const quoteText = document.getElementById("quote-text");
+  const quoteName = document.getElementById("quote-name");
+  const quoteRole = document.getElementById("quote-role");
+  const quoteAvatar = document.getElementById("quote-avatar");
+  const prevBtn = document.getElementById("prev-quote");
+  const nextBtn = document.getElementById("next-quote");
+
+  function updateQuote(index) {
+    if (!quoteText) return;
+    quoteText.style.opacity = "0";
+    setTimeout(() => {
+      quoteText.textContent = testimonials[index].quote;
+      quoteName.textContent = testimonials[index].name;
+      quoteRole.textContent = testimonials[index].role;
+      if (quoteAvatar) quoteAvatar.src = testimonials[index].avatar;
+      quoteText.style.opacity = "1";
+    }, 180);
+  }
+
+  if (nextBtn && prevBtn) {
+    nextBtn.addEventListener("click", () => {
+      currentQuote = (currentQuote + 1) % testimonials.length;
+      updateQuote(currentQuote);
+    });
+    prevBtn.addEventListener("click", () => {
+      currentQuote = (currentQuote - 1 + testimonials.length) % testimonials.length;
+      updateQuote(currentQuote);
+    });
+  }
+
+  // 7. Interactive Form Buttons
+  const typeBtns = document.querySelectorAll(".type-btn");
+  typeBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      typeBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  const tagBtns = document.querySelectorAll(".tag-btn");
+  tagBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.classList.toggle("active");
+    });
+  });
+});
+</script>
+
+</body>
+</html>
