@@ -6,6 +6,14 @@
   <title>RELOOP — Secondary Materials Infrastructure & Material Circularity</title>
   <meta name="description" content="RELOOP brings post-consumer plastics, polymers, metals, and electronics back into the production cycle—reducing dependence on virgin resource extraction.">
   
+  <!-- Reset Scroll Restoration to Always Start at Top/Hero Section on Refresh -->
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  </script>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1131,6 +1139,22 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   
+  // 0. Ensure Page Always Loads / Refreshes at the Hero Section (Top)
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  // Clear hash from URL without page jump/reload if hash exists on refresh
+  if (window.location.hash) {
+    history.replaceState(null, null, window.location.pathname + window.location.search);
+  }
+
+  // Force scroll to top (Hero Section)
+  window.scrollTo(0, 0);
+  setTimeout(function() {
+    window.scrollTo(0, 0);
+  }, 10);
+
   // 1. Intersection Observer for Scroll Reveals
   const revealElements = document.querySelectorAll(".reveal, .reveal-scale, .reveal-left, .reveal-right");
   
@@ -1148,9 +1172,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Trigger counter animation if inside entry
         const counters = entry.target.querySelectorAll(".counter-num:not(.counted)");
         counters.forEach(counter => animateCounter(counter));
-        
-        // Optionally unobserve if single reveal preferred
-        // observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
